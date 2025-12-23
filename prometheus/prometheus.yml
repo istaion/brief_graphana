@@ -3,12 +3,10 @@ global:
   evaluation_interval: 15s
 
 scrape_configs:
-  # Prometheus lui-même
   - job_name: 'prometheus'
     static_configs:
       - targets: ['localhost:9090']
 
-  # Application FastAPI
   - job_name: 'fastapi'
     static_configs:
       - targets: ['api:8000']

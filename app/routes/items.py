@@ -33,7 +33,6 @@ def get_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @router.get("/{item_id}", response_model=ItemResponse)
 def get_item(item_id: int, db: Session = Depends(get_db)):
-    # Mesurer la durée de la requête DB
     with DatabaseQueryTimer():
         item = ItemService.get_by_id(db, item_id)
 
@@ -42,8 +41,6 @@ def get_item(item_id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Item with id {item_id} not found",
         )
-
-    # Incrémenter le compteur APRÈS succès
     items_read_total.inc()
 
     return item
@@ -54,8 +51,6 @@ def create_item(item_data: ItemCreate, db: Session = Depends(get_db)):
     # Mesurer la durée de la requête DB
     with DatabaseQueryTimer():
         new_item = ItemService.create(db, item_data)
-
-    # Incrémenter le compteur APRÈS succès
     items_created_total.inc()
 
     return new_item
@@ -72,8 +67,6 @@ def update_item(item_id: int, item_data: ItemUpdate, db: Session = Depends(get_d
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Item with id {item_id} not found",
         )
-
-    # Incrémenter le compteur APRÈS succès
     items_updated_total.inc()
 
     return item
@@ -90,8 +83,6 @@ def delete_item(item_id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Item with id {item_id} not found",
         )
-
-    # Incrémenter le compteur APRÈS succès
     items_deleted_total.inc()
 
 def _old_helper_function(data):

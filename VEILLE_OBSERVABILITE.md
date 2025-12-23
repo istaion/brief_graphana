@@ -15,9 +15,9 @@ On utilise des accolades {} immédiatement après le nom de la métrique avec de
 
     Inégalité (!=) : http_requests_total{status!="500"}
 
-    Regex (=~) : http_requests_total{method=~"GET|POST"} (pour filtrer plusieurs valeurs).
+    in (=~) : http_requests_total{method=~"GET|POST"} (pour filtrer plusieurs valeurs).
 
-    Regex inverse (!~) : http_requests_total{job!~"node-.*"}
+    out (!~) : http_requests_total{job!~"node-.*"}
 
 3. Que fait la fonction histogram_quantile() ?
 

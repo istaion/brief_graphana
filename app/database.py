@@ -7,6 +7,7 @@ et fournit une fonction générateur pour obtenir des sessions de base de donné
 import os
 from dotenv import load_dotenv
 from sqlmodel import Session, create_engine
+from app.monitoring.metrics import db_connection_pool_size, active_db_connections
 
 # Charger les variables d'environnement depuis .env
 load_dotenv()
@@ -15,9 +16,18 @@ DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./test.db")
 
 POOL_SIZE = 10
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_size=POOL_SIZE, max_overflow=20)
+
+# Initialiser la métrique du pool size
+db_connection_pool_size.set(POOL_SIZE)
 
 
 def get_db():
     with Session(engine) as session:
-        yield session
+        # Incrémenter le compteur de connexions actives
+        active_db_connections.inc()
+        try:
+            yield session
+        finally:
+            # Décrémenter le compteur de connexions actives
+            active_db_connections.dec()
